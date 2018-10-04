@@ -1,11 +1,14 @@
 /**/
 #include "types.h"
+#include <string.h>
+
 
 #define MAX_SIZE 256
 
 struct _Palabra {
   char **symbols;
   int size;
+  int current;
 }
 
 char* get_symbol_by_index(Palabra *palabra, int index){
@@ -42,6 +45,17 @@ int set_word_size(Palabra *palabra, int new_size){
 	}
 
 	return ERROR;
+}
 
 
+Palabra* create_word( int size ){
+	 Palabra* palabra = NULL;
+
+	 if(size <= 0){
+	 	return NULL;
+	 }
+	 
+	 palabra = (char **)malloc(size*(char *));
+
+}
 
