@@ -1,7 +1,9 @@
 /**/
 #include <stdio.h>
 #include <string.h>
+
 #include "estado.h"
+#include "types.h"
 
 struct _Estado{
 	char* nombre;
