@@ -8,6 +8,7 @@
 struct _Alfabeto{
   char **symbols;
   int size;
+  int current;
 }
 
 Alfabeto *crear_alfabeto(int size){
@@ -28,7 +29,9 @@ Alfabeto *crear_alfabeto(int size){
     return NULL;
   }
   
-  return s;
+  a->current=0;
+  
+  return a;
 }
 
 void destruye_alfabeto(Alfabeto *a){
@@ -42,7 +45,7 @@ void destruye_alfabeto(Alfabeto *a){
     return;
   }
     
-  for(i=0; i<a->size; i++){
+  for(i=0; i<a->current; i++){
     if(a->symbols[i])
       free(a->symbols[i]);
   }
@@ -51,6 +54,19 @@ void destruye_alfabeto(Alfabeto *a){
   free(a);
 }
 
-int alfabeto_aniade_palabra(Alfabeto *a, char *palabra);
+int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
+  if(!a || !palabra || a->current+1 >= a->size)
+    return ERROR;
+  
+  a->symbols[a->current]=(char *)malloc((strlen(palabra)+1)*sizeof(char));
+  if(!a->symbols[a->current])
+    return ERROR;
+  
+  strcpy(a->symbols[a->current], palabra);
+  a->current++;
+  
+  return OK;
+}
+
 char *get_palabra_by_index(Alfabeto *a, int index);
 int get_words_number(Alfabeto *a);
