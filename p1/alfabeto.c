@@ -68,5 +68,16 @@ int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
   return OK;
 }
 
-char *get_palabra_by_index(Alfabeto *a, int index);
-int get_words_number(Alfabeto *a);
+char *get_palabra_by_index(Alfabeto *a, int index){
+  if(!a || index < 0 || index >= a->current)
+    return NULL;
+  
+  return a->symbols[index];
+}
+
+int get_size_alfabeto(Alfabeto *a){
+  if(!a)
+    return -1;
+  
+  return a->current;
+}
