@@ -5,11 +5,20 @@
 #include "estado.h"
 #include "types.h"
 
+/********************************************************
+* Name: Estado
+* Description: Estado data type definition
+********************************************************/
+
 struct _Estado{
 	char* nombre;
 	int tipo;
 }
 
+/********************************************************
+* Name: crear_estado
+* Description:  creates a state with the passed name and type
+********************************************************/
 
 Estado *crear_estado(char *name, int type){
 	Estado *s=NULL;
@@ -32,6 +41,11 @@ Estado *crear_estado(char *name, int type){
 	return s;
 }
 
+/********************************************************
+* Name: destruir_estado
+* Description: destroys the state passed as argument
+********************************************************/
+
 void destruir_estado(Estado *s){
 	if(!s)
 		return;
@@ -42,6 +56,11 @@ void destruir_estado(Estado *s){
 	
 }
 
+/********************************************************
+* Name: estado_get_name
+* Description: returns the name of the passed state
+********************************************************/
+
 char *estado_get_name(Estado *s){
 	if(!s || !s->nombre)
 		return NULL;
@@ -49,6 +68,11 @@ char *estado_get_name(Estado *s){
 	return s->nombre;
 }
 	
+/********************************************************
+* Name: estado_get_tipo
+* Description:  returns the state type of the state passed as argument
+********************************************************/
+
 int estado_get_tipo(Estado *s){
 	if(!s || (s->type != INCIAL && s->type != NORMAL && s->type != FINAL))
 		return ERROR;

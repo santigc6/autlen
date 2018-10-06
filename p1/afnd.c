@@ -1,6 +1,17 @@
 #include <stdio.h>
 
-AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
+struct _AFND{
+	char *name;
+	Alfabeto *a;
+	Estado* estados;
+}
+
+
+AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos){
+
+
+}
+
 void AFNDElimina(AFND * p_afnd);
 void AFNDImprime(FILE * fd, AFND* p_afnd);
 AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo);

@@ -1,6 +1,8 @@
 #ifndef AFND_H
 #define AFND_H
 
+typedef struct _AFND AFND;
+
 AFND * AFNDNuevo(char * nombre, int num_estados, int num_simbolos);
 void AFNDElimina(AFND * p_afnd);
 void AFNDImprime(FILE * fd, AFND* p_afnd);

@@ -4,4 +4,6 @@
 #define OK 1
 #define ERROR 0
 
+#define MAX_SIZE 1024
+
 #endif
