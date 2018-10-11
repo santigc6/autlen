@@ -16,6 +16,10 @@ struct _Alfabeto{
 
 }
 
+/********************************************************
+* Name: crear_alfabeto
+* Description: returns an Alfabeto of the passed size
+********************************************************/
 Alfabeto *crear_alfabeto(int size){
   Alfabeto *a=NULL;
   
@@ -39,6 +43,10 @@ Alfabeto *crear_alfabeto(int size){
   return a;
 }
 
+/********************************************************
+* Name: destruye_alfabeto
+* Description: destroys the passed Alfabeto
+********************************************************/
 void destruye_alfabeto(Alfabeto *a){
   int i;
   
@@ -59,6 +67,10 @@ void destruye_alfabeto(Alfabeto *a){
   free(a);
 }
 
+/********************************************************
+* Name: alfabeto_aniade_palabra
+* Description: adds a word to an alphabet
+********************************************************/
 int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
   if(!a || !palabra || a->current+1 >= a->size)
     return ERROR;
@@ -73,6 +85,10 @@ int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
   return OK;
 }
 
+/********************************************************
+* Name: get_palabra_by_index
+* Description: gets the word stored in the index passed of a passed alphabet
+********************************************************/
 char *get_palabra_by_index(Alfabeto *a, int index){
   if(!a || index < 0 || index >= a->current)
     return NULL;
@@ -80,6 +96,10 @@ char *get_palabra_by_index(Alfabeto *a, int index){
   return a->symbols[index];
 }
 
+/********************************************************
+* Name: get_words_number
+* Description: get the words number of an alphabet
+********************************************************/
 int get_size_alfabeto(Alfabeto *a){
   if(!a)
     return -1;
@@ -87,32 +107,3 @@ int get_size_alfabeto(Alfabeto *a){
   return a->current;
 
 }
-
-/********************************************************
-* Name: crear_alfabeto
-* Description: returns an Alfabeto of the passed size
-********************************************************/
-
-	
-
-/********************************************************
-* Name: destruye_alfabeto
-* Description: destroys the passed Alfabeto
-********************************************************/
-
-
-/********************************************************
-* Name: alfabeto_aniade_palabra
-* Description: adds a word to an alphabet
-********************************************************/
-
-
-/********************************************************
-* Name: get_palabra_by_index
-* Description: gets the word stored in the index passed of a passed alphabet
-********************************************************/
-
-/********************************************************
-* Name: get_words_number
-* Description: get the words number of an alphabet
-********************************************************/
