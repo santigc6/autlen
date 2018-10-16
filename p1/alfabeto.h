@@ -38,4 +38,6 @@ char *get_palabra_by_index(Alfabeto *a, int index);
 ********************************************************/
 int get_words_number(Alfabeto *a);
 
+void print_alfabeto(FILE *fd, Alfabeto* a);
+
 #endif

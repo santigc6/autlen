@@ -15,6 +15,27 @@ struct _Estado{
 	int tipo;
 }
 
+Estado **incicializar_lista_estados(int size){
+	Estado **e=NULL;
+
+	if(size <= 0)
+		return NULL;
+
+	e=(Estado **)malloc(sizeof(Estado *) * size);
+	if(!e)
+		return NULL;
+
+	return e;
+}
+
+void destruir_lista_estados(Estado **lista){
+	if(!lista){
+		return;
+	}
+
+	free(lista);
+}
+
 /********************************************************
 * Name: crear_estado
 * Description:  creates a state with the passed name and type
@@ -78,4 +99,39 @@ int estado_get_tipo(Estado *s){
 		return ERROR;
 	
 	return s->type;
+}
+
+void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
+	int i;
+
+	if(!fd || !e)
+		return;
+
+	if(flag_format=0){
+		fprintf(fd, "Q={ ");
+		for(i=0; i<n_estados; i++){
+			if(e[i]->tipo == INICIAL){
+				fprintf(fd, " ->");
+			}
+			fprintf(fd, "%s", e[i]->nombre);
+			if(e[i]->tipo == FINAL){
+				fprintf(fd, "*");
+			}
+			fprintf(fd, " ", );
+		}
+		fprintf(fd, "}\n\n");
+	} else{ /* Transition format */
+		fprintf(fd, "={ ");
+		for(i=0; i<n_estados; i++){
+			fprintf(fd, "%s ", e[i]->nombre);
+		}
+		fprintf(fd, "}\n");
+	}
+}
+
+void print_estado(FILE *fd, Estado *e){
+	if(!fd || !e)
+		return;
+
+	fprintf(fd, "%s", e[i]->nombre);
 }

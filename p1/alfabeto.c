@@ -107,3 +107,16 @@ int get_size_alfabeto(Alfabeto *a){
   return a->current;
 
 }
+
+void print_alfabeto(FILE *fd, Alfabeto* a){
+	int i=0;
+
+	if(!fd || !a)
+		return;
+
+	fprintf(fd, "A={ ");
+	for(i=0; i<a->current; i++){
+		fprintf(fd, "%s ", a->symbols[i]);
+	}
+	fprintf(fd, " }\n\n");
+}

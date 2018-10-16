@@ -12,6 +12,10 @@
 ********************************************************/
 typedef struct _Estado Estado;
 
+Estado **incicializar_lista_estados(int size);
+
+void destruir_lista_estados(Estado **lista);
+
 /********************************************************
 * Name: crear_estado
 * Description:  creates a state with the passed name and type
@@ -35,5 +39,9 @@ char *estado_get_name(Estado *s);
 * Description:  returns the state type of the state passed as argument
 ********************************************************/
 int estado_get_tipo(Estado *s);
+
+void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados);
+
+void print_estado(FILE *fd, Estado *e)
 
 #endif
