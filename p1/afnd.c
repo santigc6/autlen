@@ -20,9 +20,26 @@ struct _AFND{
   Palabra *word;
 	int n_simb;
 	int n_est;
+  int current_est;
   int n_trans;
 	Estado **estados;
 	Transicion **transitions;
+}
+
+/* Private function */
+int transitions_equal(Transicion *t, char *name_ini, char *trans_symbol){
+  if(!t || !name_ini || !trans_symbol)
+    return ERROR;
+
+  if(strcmp(t->trans_symbol, trans_symbol) == 0){
+    if(strcmp(estado_get_name(t->inicial), name_ini)){
+      return OK;
+    }
+
+    return ERROR; /* No es necesario */
+  }
+
+  return ERROR;
 }
 
 AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
@@ -69,6 +86,8 @@ AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
     destroy_word(a->word);
     free(a);
   }
+
+  a->current_est=0;
   
   return a;
 }
@@ -120,7 +139,7 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
     fprintf(fd, "\t\tf(", );
     print_estado(fd, p_afnd->transitions[i]->inicial);
     fprintf(fd, ",%s)={ ", p_afnd->transitions[i]->trans_symbol);
-    print_estados(fd, p_afnd->transitions[i]->final, 1, n_final);
+    print_estados(fd, p_afnd->transitions[i]->final, 1, p_afnd->transitions[i]->n_final);
   }
 
   fprintf(fd, "\t}\n}\n\n");
@@ -128,29 +147,117 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
 }
 
 AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo){
-  
+  if(!p_afnd || !simbolo)
+    return NULL;
+
+  if(alfabeto_aniade_palabra(p_afnd->alfabeto, simbolo) == ERROR)
+    return NULL;
+
+  return p_afnd;
 }
 
+AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
+  if(!p_afnd || !nombre || (tipo != INCIAL && tipo != NORMAL && tipo !=FINAL && tipo != INICIAL_Y_FINAL))
+    return NULL;
 
-AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo);
+  p_afnd->estados[p_afnd->current_est]= crear_estado(nombre, tipo);
+  if(!p_afnd->estados[p_afnd->current_est])
+    return NULL;
+
+  p_afnd->current_est++;
+
+  return p_afnd;
+}
 
 AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombre_simbolo_entrada, char * nombre_estado_f ){
-	Transicion *t=NULL;
+  int i;
+  int j;
+  int flag_add = ERROR;
 
 	if(!p_afnd || !nombre_estado_i || !nombre_simbolo_entrada || !nombre_estado_f){
 		return NULL;
 	}
 
-	t=(Transicion *)malloc(sizeof(Transicion));
-	if(!t)
-		return NULL;
+  if(!p_afnd->transitions){
+    p_afnd->transitions=(Transicion **)malloc(sizeof(Transicion));
+    if(!p_afnd->transitions)
+      return NULL;
 
-	/*t->inicial=*/
+    p_afnd->n_trans++;
+    p_afnd->transitions[0]=(Transicion *)malloc(sizeof(Transicion));
+    if(!p_afnd->transitions[0]){
+      free(p_afnd->transitions);
+
+      return NULL;
+    }
+  } else{
+    for(i=0; i<p_afnd->n_trans; i++){
+      if(transitions_equal(p_afnd->transitions[i], nombre_estado_i, nombre_simbolo_entrada) == OK){ /* Buscamos si hay alguna transicion con la misma entrada en el mismo estado para aniadirselo a su lista de finales */
+        for(j=0; j<p_afnd->n_est; j++){
+          if(strcmp(estado_get_name(p_afnd->estados[j]), nombre_estado_f) == 0){
+            p_afnd->transitions[i]->final[p_afnd->transitions[i]->n_final]=p_afnd->estados[j];
+            p_afnd->transitions[i]->n_final++;
+            flag_add=OK;
+          }
+        }
+      }
+    }
+    if(flag_add != OK){ /* No ha habido transiciones iguales */
+      /* One more transition */
+      p_afnd->n_trans++;
+    	p_afnd->transitions=(Transicion **)realloc(sizeof(Transicion *) * p_afnd->n_trans);
+    	if(!p_afnd->transitions)
+    		return NULL;
+
+      p_afnd->transitions[n_trans-1]=(Transicion *)malloc(sizeof(Transicion));
+      if(!p_afnd->transitions[n_trans-1]){
+        perror("Allocating transtion");
+
+        return NULL;
+      }
+
+      p_afnd->transitions[n_trans-1]->trans_symbol=(char *)malloc((strlen(nombre_simbolo_entrada) + 1) * sizeof(char));
+      if(!p_afnd->transitions[n_trans-1]->trans_symbol){
+        free(p_afnd->transitions[n_trans-1]);
+
+        return NULL;
+      }
+      strcpy(p_afnd->transitions[n_trans-1]->trans_symbol, nombre_simbolo_entrada);
+
+      for(j=0; j<p_afnd->n_est; j++){
+        if(strcmp(estado_get_name(p_afnd->estados[j]), nombre_estado_i) == 0){
+          p_afnd->transitions[n_trans-1]->inicial=p_afnd->estados[j];
+        }
+        if(strcmp(estado_get_name(p_afnd->estados[j]), nombre_estado_f) == 0){
+          p_afnd->transitions[n_trans-1]->final[0]=p_afnd->estados[j];
+          p_afnd->transitions[n_trans-1]->n_final++;
+        }
+      }
+    }
+  }
 }
 
-AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra);
-void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd);
-void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd);
-AFND * AFNDInicializaEstado (AFND * p_afnd);
-void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd);
-void AFNDTransita(AFND * p_afnd);
+AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
+
+}
+
+void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd){
+
+}
+
+void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
+
+}
+
+AFND * AFNDInicializaEstado (AFND * p_afnd){
+
+}
+
+void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
+
+}
+
+void AFNDTransita(AFND * p_afnd){
+
+
+}

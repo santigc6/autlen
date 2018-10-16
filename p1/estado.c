@@ -110,11 +110,11 @@ void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
 	if(flag_format=0){
 		fprintf(fd, "Q={ ");
 		for(i=0; i<n_estados; i++){
-			if(e[i]->tipo == INICIAL){
+			if(e[i]->tipo == INICIAL || e[i]->tipo == INICIAL_Y_FINAL){
 				fprintf(fd, " ->");
 			}
 			fprintf(fd, "%s", e[i]->nombre);
-			if(e[i]->tipo == FINAL){
+			if(e[i]->tipo == FINAL || e[i]->tipo == INICIAL_Y_FINAL){
 				fprintf(fd, "*");
 			}
 			fprintf(fd, " ", );

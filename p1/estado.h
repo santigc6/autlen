@@ -5,6 +5,7 @@
 #define INICIAL 2
 #define NORMAL 3
 #define FINAL 4
+#define INICIAL_Y_FINAL 5
 
 /********************************************************
 * Name: Estado
