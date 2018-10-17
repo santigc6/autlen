@@ -1,25 +1,19 @@
-/**/
-
 #ifndef PALABRA_H
 #define PALABRA_H
+
+typedef struct _Palabra Palabra;
 
 /********************************************************
 * Name: create_word
 * Description:  creates a word with size the passed size
 ********************************************************/
-Palabra* create_word( int size );
+Palabra* create_word(int size);
 
 /********************************************************
 * Name: destroy_word
 * Description:  destroys the passed word
 ********************************************************/
 void destroy_word(Palabra* palabra);
-
-/********************************************************
-* Name: Palabra
-* Description: Palabra data type declaration
-********************************************************/
-typedef struct _Palabra Palabra;
 
 /********************************************************
 * Name: get_symbol_by_index
@@ -31,7 +25,7 @@ char* get_symbol_by_index(Palabra *palabra, int index);
 * Name: get_word_size
 * Description: returns the size of a passed word
 ********************************************************/
-char* get_word_size(Palabra *palabra);
+int get_word_size(Palabra *palabra);
 
 /********************************************************
 * Name: set_symbol_by_index

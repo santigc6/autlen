@@ -16,11 +16,9 @@ int main(int argc, char ** argv)
 
 /* DECLARACIÓN DE UN PUNTERO A UN AFND */
     AFND * p_afnd;
-
-
+    
 /* INICIALIZACIÓN DE UN NUEVO AFND DE NOMBRE af1 Y CON 3 ESTADOS Y 2 SÍMBOLOS EN SU ALFABETO */
     p_afnd = AFNDNuevo("af1",3,2);
-    
 
 /* DEFINICIÓN DEL ALFABETO DEL AFND */
     AFNDInsertaSimbolo(p_afnd,"0");

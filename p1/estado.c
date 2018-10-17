@@ -1,21 +1,22 @@
 /**/
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "estado.h"
 #include "types.h"
 
 /********************************************************
 * Name: Estado
-* Description: Estado data type definition
+* Description: Estado data tipo definition
 ********************************************************/
 
 struct _Estado{
 	char* nombre;
 	int tipo;
-}
+};
 
-Estado **incicializar_lista_estados(int size){
+Estado **inicializar_lista_estados(int size){
 	Estado **e=NULL;
 
 	if(size <= 0)
@@ -38,15 +39,15 @@ void destruir_lista_estados(Estado **lista){
 
 /********************************************************
 * Name: crear_estado
-* Description:  creates a state with the passed name and type
+* Description:  creates a state with the passed name and tipo
 ********************************************************/
 
-Estado *crear_estado(char *name, int type){
+Estado *crear_estado(char *name, int tipo){
 	Estado *s=NULL;
 	
-	if(!name || (type != INCIAL && type != NORMAL && type != FINAL && type != INICIAL_Y_FINAL))
+	if(!name || (tipo != INICIAL && tipo != NORMAL && tipo != FINAL && tipo != INICIAL_Y_FINAL))
 		return NULL;
-	
+
 	s=(Estado *)malloc(sizeof(Estado));
 	if(!s)
 		return NULL;
@@ -56,9 +57,10 @@ Estado *crear_estado(char *name, int type){
 		free(s);
 		return NULL;
 	}
+  strcpy(s->nombre, name);
 	
-	s->tipo=type;
-	
+	s->tipo=tipo;
+
 	return s;
 }
 
@@ -91,14 +93,14 @@ char *estado_get_name(Estado *s){
 	
 /********************************************************
 * Name: estado_get_tipo
-* Description:  returns the state type of the state passed as argument
+* Description:  returns the state tipo of the state passed as argument
 ********************************************************/
 
 int estado_get_tipo(Estado *s){
-	if(!s || (s->type != INCIAL && s->type != NORMAL && s->type != FINAL && s->type != INICIAL_Y_FINAL))
+	if(!s || (s->tipo != INICIAL && s->tipo != NORMAL && s->tipo != FINAL && s->tipo != INICIAL_Y_FINAL))
 		return ERROR;
 	
-	return s->type;
+	return s->tipo;
 }
 
 void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
@@ -117,7 +119,7 @@ void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
 			if(e[i]->tipo == FINAL || e[i]->tipo == INICIAL_Y_FINAL){
 				fprintf(fd, "*");
 			}
-			fprintf(fd, " ", );
+			fprintf(fd, " ");
 		}
 		fprintf(fd, "}\n\n");
 	} else if(flag_format==1){ /* Transition format */
@@ -136,7 +138,7 @@ void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
 			if(e[i]->tipo == FINAL || e[i]->tipo == INICIAL_Y_FINAL){
 				fprintf(fd, "*");
 			}
-			fprintf(fd, " ", );
+			fprintf(fd, " ");
 		}
 		fprintf(fd, "}\n");
 	}

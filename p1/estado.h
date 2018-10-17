@@ -13,7 +13,7 @@
 ********************************************************/
 typedef struct _Estado Estado;
 
-Estado **incicializar_lista_estados(int size);
+Estado **inicializar_lista_estados(int size);
 
 void destruir_lista_estados(Estado **lista);
 
@@ -43,6 +43,6 @@ int estado_get_tipo(Estado *s);
 
 void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados);
 
-void print_estado(FILE *fd, Estado *e)
+void print_estado(FILE *fd, Estado *e);
 
 #endif

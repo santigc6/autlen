@@ -1,6 +1,7 @@
 /**/
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "alfabeto.h"
 #include "types.h"
@@ -13,8 +14,7 @@ struct _Alfabeto{
   char **symbols;
   int size;
   int current;
-
-}
+};
 
 /********************************************************
 * Name: crear_alfabeto

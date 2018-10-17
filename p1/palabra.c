@@ -1,6 +1,10 @@
 /**/
-#include "types.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include "types.h"
+#include "palabra.h"
 
 #define DEFAULT 1
 
@@ -14,7 +18,7 @@ struct _Palabra {
   int size;
   int current;
   int process;
-}
+};
 
 /********************************************************
 * Name: create_word
@@ -22,8 +26,6 @@ struct _Palabra {
 ********************************************************/
 
 Palabra* create_word(int size){
-	 
-	int i = 0;
 	Palabra* palabra = NULL;
 
 	if(size <= 0){
@@ -93,9 +95,9 @@ char* get_symbol_by_index(Palabra *palabra, int index){
 * Description: returns the size of a passed word
 ********************************************************/
 
-char* get_word_size(Palabra *palabra){
+int get_word_size(Palabra *palabra){
 	if(!palabra){
-		return NULL;
+		return -1;
 	}
 
 	return palabra->current;

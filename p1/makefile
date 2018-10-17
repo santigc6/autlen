@@ -1,15 +1,8 @@
-# banderas de compilacion (PUEDE SER UTIL CAMBIARLAS)
+# flags
 CC = gcc
-#ifdef ENTREGA
 CFLAGS = -Wall -g -I .
-LDLIBS = -lm 
-#else
-CFLAGS = -Wall -g -I .
-#-DENTREGA
-LDLIBS = -lm -lpcap
-#endif
 
-# fuentes a considerar (si no se cambia, todos los '.c' del directorio actual)
+# fuentes a considerar
 SOURCES = $(shell ls -1 *.c* | xargs)
 
 # busca los ejecutables (todos los .c con metodo tipo 'int main')
@@ -19,9 +12,9 @@ EXEC_SOURCES = $(shell grep -l "^int main" $(SOURCES) | xargs)
 EXECS = $(shell echo $(EXEC_SOURCES) | sed -e 's:\.c[p]*::g')
 DEPS = $(shell echo $(SOURCES) | sed -e 's:\.c[p]*:\.d:g')
 
-all:	main
+all: main
 
-practica4:	main.c afnd.o alfabeto.o estados.o palabra.o
+main: main.o afnd.o alfabeto.o estado.o palabra.o
 
 # receta para hacer un .d (dependencias automaticas de tipo .h para tus .o)
 %.d : %.c
@@ -41,7 +34,7 @@ practica4:	main.c afnd.o alfabeto.o estados.o palabra.o
 # receta para hacer un ejecutable (suponiendo resto de dependencias OK)
 % :	%.o
 	@echo -n compilando ejecutable \'$@\'...
-	@$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+	@$(CC) $(CFLAGS) $^ -o $@
 	@echo [OK]
 
 # limpieza
