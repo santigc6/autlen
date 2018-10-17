@@ -27,7 +27,8 @@ struct _Palabra {
 
 Palabra* create_word(int size){
 	Palabra* palabra = NULL;
-
+	int i;
+	
 	if(size <= 0){
 		return NULL;
 	}
@@ -38,6 +39,8 @@ Palabra* create_word(int size){
 	}
 
 	palabra->symbols = (char**)malloc(size*sizeof(char*));
+  for(i=0; i<size; i++)
+    palabra->symbols[i]=NULL;
 
 	if(!palabra->symbols){
 		free(palabra);
@@ -68,7 +71,7 @@ void destroy_word(Palabra* palabra){
 		return;
 	}
 	
-	for(i = 0; i < palabra->current; i++){
+	for(i = 0; i < palabra->size; i++){
 		if(palabra->symbols[i])
 			free(palabra->symbols[i]);
 	}
@@ -117,7 +120,11 @@ int add_symbol(Palabra *palabra, char* symbol){
 		if(!palabra->symbols)
 		  return ERROR;
 
+    palabra->symbols[palabra->current]=NULL;
 		palabra->size += DEFAULT;
+	}
+	if(palabra->symbols[palabra->current]){
+	  free(palabra->symbols[palabra->current]);
 	}
 	palabra->symbols[palabra->current]=(char *)malloc((strlen(symbol)+1)*sizeof(char));
 	if(!palabra->symbols[palabra->current])
@@ -155,4 +162,12 @@ void word_next(Palabra *p){
 		return;
 
 	p->process++;
+}
+
+void reset_word(Palabra *p){
+  if(!p)
+    return;
+    
+  p->current=0;
+  p->process=0;
 }

@@ -43,4 +43,6 @@ int get_process(Palabra *p);
 
 void word_next(Palabra *p);
 
+void reset_word(Palabra *p);
+
 #endif

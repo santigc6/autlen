@@ -38,7 +38,7 @@ int transitions_equal(Transicion *t, char *name_ini, char *trans_symbol){
     return ERROR;
 
   if(strcmp(t->trans_symbol, trans_symbol) == 0){
-    if(strcmp(estado_get_name(t->inicial), name_ini)){
+    if(strcmp(estado_get_name(t->inicial), name_ini) == 0){
       return OK;
     }
 
@@ -79,6 +79,7 @@ AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
   a->n_trans=0;
   a->actuales = NULL;
   a->n_act=0;
+  a->n_simb=num_simbolos;
 
   a->word=create_word(DEFAULT);
   if(!a->word){
@@ -112,6 +113,7 @@ void AFNDElimina(AFND * p_afnd){
     }
     destruir_lista_estados(p_afnd->estados);
   }
+  destruir_lista_estados(p_afnd->actuales);
 
   if(p_afnd->alfabeto)
     destruye_alfabeto(p_afnd->alfabeto);
@@ -119,6 +121,7 @@ void AFNDElimina(AFND * p_afnd){
   if(p_afnd->transitions){
     for(i=0; i<p_afnd->n_trans; i++){
       if(p_afnd->transitions[i]){
+        free(p_afnd->transitions[i]->trans_symbol);
         destruir_lista_estados(p_afnd->transitions[i]->final);
         free(p_afnd->transitions[i]);
       }
@@ -130,7 +133,7 @@ void AFNDElimina(AFND * p_afnd){
     destroy_word(p_afnd->word);
 
   free(p_afnd->name);
-  destruir_lista_estados(p_afnd->actuales);
+  free(p_afnd);
 }
 
 void AFNDImprime(FILE * fd, AFND* p_afnd){
@@ -142,9 +145,9 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
     return;
 
   fprintf(fd, "%s={\n", p_afnd->name);
-  fprintf(fd, "\tnum_simbolos = %d\n\n", p_afnd->n_simb);
+  fprintf(fd, "\tnum_simbolos = %d\n\n\t", p_afnd->n_simb);
   print_alfabeto(fd, p_afnd->alfabeto);
-  fprintf(fd, "\tnum_estados = %d\n\n", p_afnd->n_est);
+  fprintf(fd, "\tnum_estados = %d\n\n\t", p_afnd->n_est);
   print_estados(fd, p_afnd->estados, 0, p_afnd->n_est);
   fprintf(fd, "Funcion de Transicion = {\n\n");
 
@@ -164,9 +167,7 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
       if(flag != OK){
         fprintf(fd, "\t\tf(");
         print_estado(fd, p_afnd->estados[j]);
-        fprintf(fd, ",%s)={ }", symb);
-
-        flag=ERROR;
+        fprintf(fd, ",%s)={ }\n", symb);
       }
     }
   }
@@ -219,7 +220,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
 
       return NULL;
     }
-    
+    p_afnd->transitions[0]->n_final=0;
     p_afnd->transitions[0]->final=inicializar_lista_estados(p_afnd->n_est);
     if(!p_afnd->transitions[0]->final)
       return NULL;
@@ -266,7 +267,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
 
         return NULL;
       }
-      
+      p_afnd->transitions[p_afnd->n_trans - 1]->n_final=0;
       p_afnd->transitions[p_afnd->n_trans-1]->trans_symbol=(char *)malloc((strlen(nombre_simbolo_entrada) + 1) * sizeof(char));
       if(!p_afnd->transitions[p_afnd->n_trans-1]->trans_symbol){
         free(p_afnd->transitions[p_afnd->n_trans-1]);
@@ -324,7 +325,7 @@ void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
 
   fprintf(fd, "[(%d) ", size-actual);
   for(i=actual; i<size; i++){
-    fprintf(fd, "%s ", get_symbol_by_index(p_afnd->word, actual));
+    fprintf(fd, "%s ", get_symbol_by_index(p_afnd->word, i));
   }
   fprintf(fd, "]\n\n");
 
@@ -336,7 +337,6 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
   if(!p_afnd)
     return NULL;
 
-  p_afnd->actuales=inicializar_lista_estados(p_afnd->n_est);
   if(!p_afnd->actuales)
     return NULL;
 
@@ -358,16 +358,19 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
   if(!fd || !p_afnd)
     return;
 
-  while(actual<size){
-    size=get_word_size(p_afnd->word);
-    actual=get_process(p_afnd->word);
-
+  size=get_word_size(p_afnd->word);
+  actual=get_process(p_afnd->word);
+  while(actual<=size){
     AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
     AFNDImprimeCadenaActual(fd, p_afnd);
     AFNDTransita(p_afnd);
     
     word_next(p_afnd->word);
+    size=get_word_size(p_afnd->word);
+    actual=get_process(p_afnd->word);
   }
+  
+  reset_word(p_afnd->word);
 }
 
 void AFNDTransita(AFND * p_afnd){
@@ -406,4 +409,5 @@ void AFNDTransita(AFND * p_afnd){
     }
   }
   p_afnd->n_act=k;
+  destruir_lista_estados(aux);
 }

@@ -118,5 +118,5 @@ void print_alfabeto(FILE *fd, Alfabeto* a){
 	for(i=0; i<a->current; i++){
 		fprintf(fd, "%s ", a->symbols[i]);
 	}
-	fprintf(fd, " }\n\n");
+	fprintf(fd, "}\n\n");
 }
