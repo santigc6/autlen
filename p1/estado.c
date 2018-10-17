@@ -44,7 +44,7 @@ void destruir_lista_estados(Estado **lista){
 Estado *crear_estado(char *name, int type){
 	Estado *s=NULL;
 	
-	if(!name || (type != INCIAL && type != NORMAL && type != FINAL))
+	if(!name || (type != INCIAL && type != NORMAL && type != FINAL && type != INICIAL_Y_FINAL))
 		return NULL;
 	
 	s=(Estado *)malloc(sizeof(Estado));
@@ -95,7 +95,7 @@ char *estado_get_name(Estado *s){
 ********************************************************/
 
 int estado_get_tipo(Estado *s){
-	if(!s || (s->type != INCIAL && s->type != NORMAL && s->type != FINAL))
+	if(!s || (s->type != INCIAL && s->type != NORMAL && s->type != FINAL && s->type != INICIAL_Y_FINAL))
 		return ERROR;
 	
 	return s->type;
@@ -107,7 +107,7 @@ void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
 	if(!fd || !e)
 		return;
 
-	if(flag_format=0){
+	if(flag_format==0){
 		fprintf(fd, "Q={ ");
 		for(i=0; i<n_estados; i++){
 			if(e[i]->tipo == INICIAL || e[i]->tipo == INICIAL_Y_FINAL){
@@ -120,10 +120,23 @@ void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
 			fprintf(fd, " ", );
 		}
 		fprintf(fd, "}\n\n");
-	} else{ /* Transition format */
+	} else if(flag_format==1){ /* Transition format */
 		fprintf(fd, "={ ");
 		for(i=0; i<n_estados; i++){
 			fprintf(fd, "%s ", e[i]->nombre);
+		}
+		fprintf(fd, "}\n");
+	}else{
+		fprintf(fd, "{ ");
+		for(i=0; i<n_estados; i++){
+			if(e[i]->tipo == INICIAL || e[i]->tipo == INICIAL_Y_FINAL){
+				fprintf(fd, " ->");
+			}
+			fprintf(fd, "%s", e[i]->nombre);
+			if(e[i]->tipo == FINAL || e[i]->tipo == INICIAL_Y_FINAL){
+				fprintf(fd, "*");
+			}
+			fprintf(fd, " ", );
 		}
 		fprintf(fd, "}\n");
 	}
@@ -133,5 +146,5 @@ void print_estado(FILE *fd, Estado *e){
 	if(!fd || !e)
 		return;
 
-	fprintf(fd, "%s", e[i]->nombre);
+	fprintf(fd, "%s", e->nombre);
 }

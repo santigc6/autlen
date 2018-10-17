@@ -6,6 +6,8 @@
 #include "alfabeto.h"
 #include "palabra.h"
 
+#define DEFAULT 1
+
 /* Estructura para las transiciones (privada) */
 typedef struct _Transiciones{
 	Estado *inicial;
@@ -22,7 +24,9 @@ struct _AFND{
 	int n_est;
   int current_est;
   int n_trans;
+  int n_act;
 	Estado **estados;
+  Estado **actuales;
 	Transicion **transitions;
 }
 
@@ -71,8 +75,10 @@ AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
   a->n_est=num_estados;
   a->transitions=NULL;
   a->n_trans=0;
+  a->actuales = NULL;
+  a->n_act=0;
 
-  a->word=create_word(size);
+  a->word=create_word(DEFAULT);
   if(!a->word){
     free(a->name);
     destruye_alfabeto(a->alfabeto);
@@ -120,10 +126,13 @@ void AFNDElimina(AFND * p_afnd){
     destroy_word(p->word);
 
   free(p_afnd->name);
+  destruir_lista_estados(p_afnd->actuales);
 }
 
 void AFNDImprime(FILE * fd, AFND* p_afnd){
-  int i;
+  int i, j, k;
+  int flag=ERROR;
+  char *name=NULL, *symb=NULL;
 
   if(!fd || !p_afnd)
     return;
@@ -135,11 +144,27 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
   print_estados(fd, p_afnd->estados, 0, p_afnd->n_est);
   fprintf(fd, "Funcion de Transicion = {\n\n");
 
-  for(i=0; i<n_trans; i++){
-    fprintf(fd, "\t\tf(", );
-    print_estado(fd, p_afnd->transitions[i]->inicial);
-    fprintf(fd, ",%s)={ ", p_afnd->transitions[i]->trans_symbol);
-    print_estados(fd, p_afnd->transitions[i]->final, 1, p_afnd->transitions[i]->n_final);
+  for(j=0; j<p_afnd->n_est; j++){ /* For each state */
+    name=estado_get_name(p_afnd->estados[j]);
+    for(k=0; k<get_size_alfabeto(p_afnd->alfabeto); k++){ /* For each symbol in the alphabet */
+      symb=get_palabra_by_index(p_afnd->alfabeto, k);
+      for(flag=ERROR; i=0; i<p_afnd_n_trans; i++){
+        if(transitions_equal(p_afnd->transitions[i], name, symb) == OK){ /* We try to find a transition */
+          fprintf(fd, "\t\tf(", );
+          print_estado(fd, p_afnd->transitions[i]->inicial);
+          fprintf(fd, ",%s)", p_afnd->transitions[i]->trans_symbol);
+          print_estados(fd, p_afnd->transitions[i]->final, 1, p_afnd->transitions[i]->n_final);
+          flag=OK;
+        }
+      }
+      if(flag != OK){
+        fprintf(fd, "\t\tf(", );
+        print_estado(fd, p_afnd->estados[j]);
+        fprintf(fd, ",%s)={ }", symb);
+
+        flag=ERROR;
+      }
+    }
   }
 
   fprintf(fd, "\t}\n}\n\n");
@@ -157,7 +182,7 @@ AFND * AFNDInsertaSimbolo(AFND * p_afnd, char * simbolo){
 }
 
 AFND * AFNDInsertaEstado(AFND * p_afnd, char * nombre, int tipo){
-  if(!p_afnd || !nombre || (tipo != INCIAL && tipo != NORMAL && tipo !=FINAL && tipo != INICIAL_Y_FINAL))
+  if(!p_afnd || !nombre || (tipo != INICIAL && tipo != NORMAL && tipo !=FINAL && tipo != INICIAL_Y_FINAL))
     return NULL;
 
   p_afnd->estados[p_afnd->current_est]= crear_estado(nombre, tipo);
@@ -205,7 +230,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
     if(flag_add != OK){ /* No ha habido transiciones iguales */
       /* One more transition */
       p_afnd->n_trans++;
-    	p_afnd->transitions=(Transicion **)realloc(sizeof(Transicion *) * p_afnd->n_trans);
+    	p_afnd->transitions=(Transicion **)realloc(p_afnd->transitions, sizeof(Transicion *) * p_afnd->n_trans);
     	if(!p_afnd->transitions)
     		return NULL;
 
@@ -238,26 +263,114 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
 }
 
 AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
+  if(!p_afnd || !letra)
+    return NULL;
 
+  if(add_symbol(p_afnd->word, letra) == ERROR)
+    return NULL;
+
+  return p_afnd;
 }
 
 void AFNDImprimeConjuntoEstadosActual(FILE * fd, AFND * p_afnd){
+  if(!fd | !p_afnd)
+    return;
 
+  fprintf(fd, "ACTUALMENTE EN ");
+  print_estados(fd, p_afnd->actuales, 2, p_afnd->n_act);
 }
 
 void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
+  int i;
+  int size, actual;
+
+  if(!fd | !p_afnd)
+    return;
+
+  size=get_word_size(p_afnd->word);
+  actual=get_process(p_afnd->word);
+
+  fprintf(fd, "[(%d) ", size-actual);
+  for(i=actual; i<size; i++){
+    fprintf(fd, "%s ", get_symbol_by_index(p_afnd->word, actual));
+  }
+  fprintf(fd, "]\n\n");
 
 }
 
 AFND * AFNDInicializaEstado (AFND * p_afnd){
+  int i, j=0;
 
+  if(!p_afnd)
+    return NULL;
+
+  p_afnd->actuales=incicializar_lista_estados(p_afnd->n_est);
+  if(!p_afnd->actuales)
+    return NULL;
+
+  for(i=0; i<p_afnd->n_est; i++){
+    if(estado_get_tipo(p_afnd->estados[i]) == INICIAL){
+      p_afnd->actuales[j]=p_afnd->estados[i];
+      j++;
+    }
+  }
+
+  p_afnd->n_act=1;
+
+  return p_afnd;
 }
 
 void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
+  int actual, size;
 
+  if(!fd || !p_afnd)
+    return NULL;
+
+  while(actual<size){
+    size=get_word_size(p_afnd->word);
+    actual=get_process(p_afnd->word);
+
+    AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
+    AFNDImprimeCadenaActual(fd, p_afnd);
+    AFNDTransita(p_afnd);
+    
+    word_next(p_afnd->word);
+  }
 }
 
 void AFNDTransita(AFND * p_afnd){
+  int i, j, k;
+  int last;
+  int actual;
+  char *symb=NULL, *name=NULL;
+  Estado **aux=NULL;
 
+  if(!p_afnd)
+    return;
 
+  aux=incicializar_lista_estados(p_afnd->n_act);
+  if(!aux)
+    return;
+
+  /* We keep the references */
+  last=p_afnd->n_act;
+  for(i=0; i<p_afnd->n_act; i++){
+    aux[i]=p_afnd->actuales[i];
+  }
+
+  actual=get_process(p_afnd->word);
+  symb=get_symbol_by_index(p_afnd->word, actual);
+
+  k=0;
+  for(i=0; i<p_afnd->n_act; i++){ /* For each actual state */
+    name=estado_get_name(aux[i]);
+    for(j=0; j<p_afnd->n_trans; j++){ /* We find all the transitions for the given state and symbol */
+      if(transitions_equal(p_afnd->transitions[j], name, symb) == OK){
+        for(index=0; index<p_afnd->transitions[j]->n_final_; index++){ /* We add all the final states of the transition */
+          p_afnd->actuales[k]=p_afnd->transitions[j]->final[index];
+          k++;
+        }
+      }
+    }
+  }
 }

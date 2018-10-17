@@ -72,7 +72,7 @@ void destruye_alfabeto(Alfabeto *a){
 * Description: adds a word to an alphabet
 ********************************************************/
 int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
-  if(!a || !palabra || a->current+1 >= a->size)
+  if(!a || !palabra || a->current == a->size)
     return ERROR;
   
   a->symbols[a->current]=(char *)malloc((strlen(palabra)+1)*sizeof(char));

@@ -45,4 +45,8 @@ int add_symbol(Palabra *palabra, char* symbol);
 ********************************************************/
 int set_word_size(Palabra *palabra, int new_size);
 
+int get_process(Palabra *p);
+
+void word_next(Palabra *p);
+
 #endif

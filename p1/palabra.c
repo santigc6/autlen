@@ -2,6 +2,7 @@
 #include "types.h"
 #include <string.h>
 
+#define DEFAULT 1
 
 /********************************************************
 * Name: Palabra
@@ -12,6 +13,7 @@ struct _Palabra {
   char **symbols;
   int size;
   int current;
+  int process;
 }
 
 /********************************************************
@@ -19,7 +21,7 @@ struct _Palabra {
 * Description:  creates a word with size the passed size
 ********************************************************/
 
-Palabra* create_word( int size ){
+Palabra* create_word(int size){
 	 
 	int i = 0;
 	Palabra* palabra = NULL;
@@ -42,6 +44,7 @@ Palabra* create_word( int size ){
 
 	palabra->size = size;
 	palabra->current = 0;
+	palabra->process = 0;
 
 	return palabra;
 }
@@ -104,10 +107,16 @@ char* get_word_size(Palabra *palabra){
 ********************************************************/
 
 int add_symbol(Palabra *palabra, char* symbol){
-	if(!palabra || !symbol || palabra->current+1 >= palabra->size){
+	if(!palabra || !symbol){
 		return ERROR;
 	}
+	if(palabra->current == palabra->size){ /* Necesitamos mas memoria */
+		palabra->symbols=(char **)realloc(palabra->symbols, (palabra->size+DEFAULT) * sizeof(char *));
+		if(!palabra->symbols)
+		  return ERROR;
 
+		palabra->size += DEFAULT;
+	}
 	palabra->symbols[palabra->current]=(char *)malloc((strlen(symbol)+1)*sizeof(char));
 	if(!palabra->symbols[palabra->current])
 	  return ERROR;
@@ -115,7 +124,7 @@ int add_symbol(Palabra *palabra, char* symbol){
 	strcpy(palabra->symbols[palabra->current], symbol);
 	palabra->current++;
 
-	return ERROR;
+	return OK;
 }
 
 /********************************************************
@@ -129,5 +138,19 @@ int set_word_size(Palabra *palabra, int new_size){
 
 	palabra->size = new_size;
 
-	return ERROR;
+	return OK;
+}
+
+int get_process(Palabra *p){
+	if(!p)
+		return -1;
+
+	return p->process;
+}
+
+void word_next(Palabra *p){
+	if(!p)
+		return;
+
+	p->process++;
 }
