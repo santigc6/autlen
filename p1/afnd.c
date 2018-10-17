@@ -113,7 +113,6 @@ void AFNDElimina(AFND * p_afnd){
     }
     destruir_lista_estados(p_afnd->estados);
   }
-  destruir_lista_estados(p_afnd->actuales);
 
   if(p_afnd->alfabeto)
     destruye_alfabeto(p_afnd->alfabeto);
@@ -337,9 +336,10 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
   if(!p_afnd)
     return NULL;
 
+  p_afnd->actuales=inicializar_lista_estados(p_afnd->n_est);
   if(!p_afnd->actuales)
     return NULL;
-
+  
   for(i=0; i<p_afnd->n_est; i++){
     if(estado_get_tipo(p_afnd->estados[i]) == INICIAL){
       p_afnd->actuales[j]=p_afnd->estados[i];
@@ -370,6 +370,7 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
     actual=get_process(p_afnd->word);
   }
   
+  destruir_lista_estados(p_afnd->actuales);
   reset_word(p_afnd->word);
 }
 
