@@ -1,3 +1,7 @@
+/******************************************************************************
+* Autores: Aitor Arnaiz del Val y Santiago Gonzalez- Carvajal Centenera
+* Grupo 1401. Pareja 9.
+******************************************************************************/
 #ifndef TYPES_H
 #define TYPES_H
 

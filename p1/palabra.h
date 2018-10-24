@@ -1,3 +1,7 @@
+/******************************************************************************
+* Autores: Aitor Arnaiz del Val y Santiago Gonzalez- Carvajal Centenera
+* Grupo 1401. Pareja 9.
+******************************************************************************/
 #ifndef PALABRA_H
 #define PALABRA_H
 
@@ -28,8 +32,8 @@ char* get_symbol_by_index(Palabra *palabra, int index);
 int get_word_size(Palabra *palabra);
 
 /********************************************************
-* Name: set_symbol_by_index
-* Description:  sets the symbol of a certain index in the word 
+* Name: add_symbol
+* Description:  adds a symbol to the word 
 ********************************************************/
 int add_symbol(Palabra *palabra, char* symbol);
 
@@ -39,10 +43,22 @@ int add_symbol(Palabra *palabra, char* symbol);
 ********************************************************/
 int set_word_size(Palabra *palabra, int new_size);
 
+/********************************************************
+* Name: get_process
+* Description: returns the index to process
+********************************************************/
 int get_process(Palabra *p);
 
+/********************************************************
+* Name: word_nex
+* Description: to advance to the next symbol
+********************************************************/
 void word_next(Palabra *p);
 
+/********************************************************
+* Name: reset_word
+* Description: resets the process and the current size
+********************************************************/
 void reset_word(Palabra *p);
 
 #endif

@@ -1,48 +1,61 @@
-/**/
+/******************************************************************************
+* Autores: Aitor Arnaiz del Val y Santiago Gonzalez- Carvajal Centenera
+* Grupo 1401. Pareja 9.
+******************************************************************************/
 #ifndef ESTADO_H
 #define ESTADO_H
 
+/* State types */
 #define INICIAL 2
 #define NORMAL 3
 #define FINAL 4
 #define INICIAL_Y_FINAL 5
 
-/********************************************************
-* Name: Estado
-* Description: Estado data type declaration
-********************************************************/
 typedef struct _Estado Estado;
 
+/********************************************************
+* Description: Initializes a states' list
+* WARNING: it doesnt free all the states in the list
+* (they must be freed before calling this function)
+********************************************************/
 Estado **inicializar_lista_estados(int size);
 
+/********************************************************
+* Description: Destroys a states' list
+********************************************************/
 void destruir_lista_estados(Estado **lista);
 
 /********************************************************
-* Name: crear_estado
-* Description:  creates a state with the passed name and type
+* Description: Creates a state with the given name and type
 ********************************************************/
 Estado *crear_estado(char *name, int type);
 
 /********************************************************
-* Name: destruir_estado
-* Description: destroys the state passed as argument
+* Description: Destroys a state
 ********************************************************/
 void destruir_estado(Estado *s);
 
 /********************************************************
-* Name: estado_get_name
-* Description: returns the name of the passed state
+* Description: returns the name of a given state
 ********************************************************/
 char *estado_get_name(Estado *s);
 
 /********************************************************
-* Name: estado_get_tipo
-* Description:  returns the state type of the state passed as argument
+* Description: returns the type of a given state
 ********************************************************/
 int estado_get_tipo(Estado *s);
 
+/********************************************************
+* Description: prints the states of a given list.
+* flag_format:  0   : Q={ } using -> and * format
+*               1   : Transition format
+*               else: Actualmente en format
+********************************************************/
 void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados);
 
+/********************************************************
+* Description: prints the name of a state
+********************************************************/
 void print_estado(FILE *fd, Estado *e);
 
 #endif

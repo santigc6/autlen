@@ -1,45 +1,45 @@
-/**/
+/******************************************************************************
+* Autores: Aitor Arnaiz del Val y Santiago Gonzalez- Carvajal Centenera
+* Grupo 1401. Pareja 9.
+******************************************************************************/
 #ifndef ALFABETO_H
 #define ALFABETO_H
 
-/********************************************************
-* Name: Alfabeto
-* Description: Alfabeto data type declaration
-********************************************************/
 typedef struct _Alfabeto Alfabeto;
 
 /********************************************************
-* Name: crear_alfabeto
-* Description: returns an Alfabeto of the passed size
+* Description: crea un alfabeto del tamanio especificado
 ********************************************************/
 Alfabeto *crear_alfabeto(int size);
 
 /********************************************************
-* Name: destruye_alfabeto
-* Description: destroys the passed Alfabeto
+* Description: Destruye un alfabeto
 ********************************************************/
 void destruye_alfabeto(Alfabeto *a);
 
 /********************************************************
-* Name: alfabeto_aniade_palabra
-* Description: adds a word to an alphabet
+* Description: Aniade una palabra al alfabeto
 ********************************************************/
 int alfabeto_aniade_palabra(Alfabeto *a, char *palabra);
 
 /********************************************************
-* Name: get_palabra_by_index
-* Description: gets the word stored in the index passed of a passed alphabet
+* Description: Devuelve la palabra de un indice del alfabeto
 ********************************************************/
 char *get_palabra_by_index(Alfabeto *a, int index);
 
 /********************************************************
-* Name: get_words_number
-* Description: get the words number of an alphabet
+* Description: Devuelve el numero de palabras del alfabeto
 ********************************************************/
 int get_words_number(Alfabeto *a);
 
+/********************************************************
+* Description: Devuelve el tamanio del alfabeto
+********************************************************/
 int get_size_alfabeto(Alfabeto *a);
 
+/********************************************************
+* Description: Imprime el alfabeto
+********************************************************/
 void print_alfabeto(FILE *fd, Alfabeto* a);
 
 #endif

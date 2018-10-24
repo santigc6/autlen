@@ -1,3 +1,7 @@
+/******************************************************************************
+* Autores: Aitor Arnaiz del Val y Santiago Gonzalez- Carvajal Centenera
+* Grupo 1401. Pareja 9.
+******************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,27 +16,32 @@
 
 /* Estructura para las transiciones (privada) */
 typedef struct _Transiciones{
-	Estado *inicial;
-	Estado **final;
-  int n_final;
-	char *trans_symbol;
+	Estado *inicial; /* Estado inicial */
+	Estado **final; /* Conjunto de estados finales */
+  int n_final; /* Numero de estados finales */
+	char *trans_symbol; /* Simbolo de la transicion */
 } Transicion;
 
+/* Estructura principal AFND */
 struct _AFND{
-	char *name;
-	Alfabeto *alfabeto;
-  Palabra *word;
-	int n_simb;
-	int n_est;
-  int current_est;
-  int n_trans;
-  int n_act;
-	Estado **estados;
-  Estado **actuales;
-	Transicion **transitions;
+	char *name; /* Nombre del AFND */
+	Alfabeto *alfabeto; /* Alfabeto del AFND */
+  Palabra *word;/* Palabra a procesar por el AFND */
+	int n_simb; /* Numero de simboloes del AFND */
+	int n_est; /* Numero de estados del AFND */
+  int current_est; /* Numero de estados actualmente aniadidos al AFND */
+  int n_trans; /* Numero de transiciones */
+  int n_act; /* Numero de estados actuales */
+	Estado **estados; /* Conjunto de estados del AFND */
+  Estado **actuales; /* Conjunto de estados actuales del AFND */
+	Transicion **transitions; /* Transiciones del AFND */
 };
 
 /* Private function */
+/****************************************************************************************
+* Description: OK   : las dos transiciones tienen el mismo estado inicial y el mismo simbolo de transicion
+*              ERROR: en caso contrario
+****************************************************************************************/
 int transitions_equal(Transicion *t, char *name_ini, char *trans_symbol){
   if(!t || !name_ini || !trans_symbol)
     return ERROR;
@@ -81,6 +90,7 @@ AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
   a->n_act=0;
   a->n_simb=num_simbolos;
 
+  /* Default word size, it doesnt matter if we exceed it because, in that case, we would use realloc */
   a->word=create_word(DEFAULT);
   if(!a->word){
     free(a->name);
@@ -163,7 +173,7 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
           flag=OK;
         }
       }
-      if(flag != OK){
+      if(flag != OK){ /* If we havent found a transition, the transition is empty */
         fprintf(fd, "\t\tf(");
         print_estado(fd, p_afnd->estados[j]);
         fprintf(fd, ",%s)={ }\n", symb);
@@ -207,11 +217,12 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
 		return NULL;
 	}
 
-  if(!p_afnd->transitions){
+  if(!p_afnd->transitions){ /* Si la lista de transiciones no esta inicializada la inicializamos */
     p_afnd->transitions=(Transicion **)malloc(sizeof(Transicion *));
     if(!p_afnd->transitions)
       return NULL;
 
+    /* Creamos una nueva transicion y guardamos los datos */
     p_afnd->n_trans++;
     p_afnd->transitions[0]=(Transicion *)malloc(sizeof(Transicion));
     if(!p_afnd->transitions[0]){
@@ -241,7 +252,7 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
         p_afnd->transitions[0]->n_final++;
       }
     }
-  } else{
+  } else{ /* Si la lista ya estaba inicializada */
     for(i=0; i<p_afnd->n_trans; i++){
       if(transitions_equal(p_afnd->transitions[i], nombre_estado_i, nombre_simbolo_entrada) == OK){ /* Buscamos si hay alguna transicion con la misma entrada en el mismo estado para aniadirselo a su lista de finales */
         for(j=0; j<p_afnd->n_est; j++){
@@ -253,8 +264,8 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
         }
       }
     }
-    if(flag_add != OK){ /* No ha habido transiciones iguales */
-      /* One more transition */
+    if(flag_add != OK){ /* No se ha encontrado una transicion con el mismo estado inicial y simbolo de transicion */
+      /* Entonces creamos otra transicion */
       p_afnd->n_trans++;
     	p_afnd->transitions=(Transicion **)realloc(p_afnd->transitions, sizeof(Transicion *) * p_afnd->n_trans);
     	if(!p_afnd->transitions)
@@ -340,8 +351,8 @@ AFND * AFNDInicializaEstado (AFND * p_afnd){
   if(!p_afnd->actuales)
     return NULL;
   
-  for(i=0; i<p_afnd->n_est; i++){
-    if(estado_get_tipo(p_afnd->estados[i]) == INICIAL){
+  for(i=0; i<p_afnd->n_est; i++){ /* Los estados actuales son todos aquellos que sean iniciales o iniciales y finales */
+    if(estado_get_tipo(p_afnd->estados[i]) == INICIAL || estado_get_tipo(p_afnd->estados[i]) == INICIAL_Y_FINAL){
       p_afnd->actuales[j]=p_afnd->estados[i];
       j++;
     }
@@ -360,7 +371,7 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
 
   size=get_word_size(p_afnd->word);
   actual=get_process(p_afnd->word);
-  while(actual<=size){
+  while(actual<=size){ /* Mientras que quede palabra por procesar vamos procesando simbolo a simbolo */
     AFNDImprimeConjuntoEstadosActual(fd, p_afnd);
     AFNDImprimeCadenaActual(fd, p_afnd);
     AFNDTransita(p_afnd);
@@ -370,6 +381,7 @@ void AFNDProcesaEntrada(FILE * fd, AFND * p_afnd){
     actual=get_process(p_afnd->word);
   }
   
+  /* Destruimos la lista de estados actuales y reiniciamos la palabra */
   destruir_lista_estados(p_afnd->actuales);
   reset_word(p_afnd->word);
 }
@@ -384,6 +396,7 @@ void AFNDTransita(AFND * p_afnd){
   if(!p_afnd)
     return;
 
+  /* Lista auxiliar para guardar una copia de los estados actuales que tenenmos que procesar */
   aux=inicializar_lista_estados(p_afnd->n_act);
   if(!aux)
     return;
@@ -402,13 +415,13 @@ void AFNDTransita(AFND * p_afnd){
     name=estado_get_name(aux[i]);
     for(j=0; j<p_afnd->n_trans; j++){ /* We find all the transitions for the given state and symbol */
       if(transitions_equal(p_afnd->transitions[j], name, symb) == OK){
-        for(index=0; index<p_afnd->transitions[j]->n_final; index++){ /* We add all the final states of the transition */
+        for(index=0; index<p_afnd->transitions[j]->n_final; index++){ /* We add all the final states of the founded transition */
           p_afnd->actuales[k]=p_afnd->transitions[j]->final[index];
           k++;
         }
       }
     }
   }
-  p_afnd->n_act=k;
-  destruir_lista_estados(aux);
+  p_afnd->n_act=k; /* Actualizamos el numero de estados actuales */
+  destruir_lista_estados(aux); /* Destruimos la lista auxiliar */
 }

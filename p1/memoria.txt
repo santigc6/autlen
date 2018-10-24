@@ -1,0 +1,18 @@
+Autores: Aitor Arnaiz del Val y Santiago González- Carvajal Centenera. Grupo 1401. Pareja 9.
+
+-COMENTARIOS SOBRE LA REALIZACIÓN DE LA PRÁCTICA:
+
+-En esta práctica, la única decisión de diseño difícil ha sido la de cómo implementar las transiciones (ya que el resto de decisiones han sido guiadas por los profesores de prácticas). Así
+que, vamos a comentar brevemente cómo hemos decidido implementarlas:
+
+  Las hemos implementado mediante una estructura oculta (declarada en su totalidad en .c sin dar información alguna en el .h). La estructura tiene un estado inicial, una lista de estados
+finales, un símbolo de transición y el número de estados finales. Esta forma de implementar la transición hace que nuestro diseño sea bastante flexible (dado que todo son referencias)
+pero hace también, que el comparar estados nos obligue a comparar nombres, y que al "transitar" tengamos que iterar sobre todas las transiciones en busca de alguna que coincida en nombre
+de estado con alguno de los estados actuales (además de que coincidan los símbolos). Por lo tanto, si hubiéramos tomado las transiciones y los estados como algo estático e invariante
+una vez se han definido (lo cual es, en realidad, cierto) podríamos haber optado por una implementación mejor, mediante simplemente representar los estados como índices, las transiciones
+posibles como 1's y las que no lo son como 0's.
+  
+  Por otro lado, comentar que hemos implementado la lista de transiciones como un doble puntero pensando en facilitar futuras implementaciones (ya que para esta práctica nos hubiera
+bastado con uno simple). Porque en implementaciones futuras podríamos necesitar editar y utilizar la lista de transiciones desde algún otro fichero, y para ello (dada nuestra 
+implementación de las mismas), solo necesitaríamos pasar el "typedef" al .h (como hemos hecho con el resto de estructuras) y agregar algunos cambios menores. Mientras que si lo
+hubiéramos hecho con un puntero simple tendríamos que pasarlo a un puntero doble con el fin de pasar las transiciones por referencia a las funciones del otro fichero.
