@@ -10,6 +10,7 @@
 #include "estado.h"
 #include "alfabeto.h"
 #include "palabra.h"
+#include "relaciones.h"
 #include "afnd.h"
 
 #define DEFAULT 1
@@ -339,6 +340,21 @@ void AFNDImprimeCadenaActual(FILE *fd, AFND * p_afnd){
   }
   fprintf(fd, "]\n\n");
 
+}
+
+AFND *AFNDInsertaLTransicion(AFND *p_afnd, char *nombre_estado_i, char *nombre_estado_f){
+  if (!p_afnd || !nombre_estado_i || !nombre_estado_f) 
+    return NULL;
+}
+
+AFND *AFNDCierraLTransicion (AFND *p_afnd){
+  if (!p_afnd) 
+    return NULL;
+}
+
+AFND *AFNDInicializaCadenaActual (AFND *p_afnd){
+  if (!p_afnd) 
+    return NULL;
 }
 
 AFND * AFNDInicializaEstado (AFND * p_afnd){
