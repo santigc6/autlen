@@ -85,6 +85,21 @@ int estado_get_tipo(Estado *s){
 	return s->tipo;
 }
 
+int estado_get_index(Estado **s, int length, char *state_name){
+  int i;
+  
+  if(!s || !state_name || length <= 0)
+    return -1;
+    
+  for(i=0; i<length; i++){
+    if(!strcmp(s[i]->nombre, state_name)){
+      return i;
+    }
+  }
+  
+  return -1;
+}
+
 void print_estados(FILE *fd, Estado **e, int flag_format, int n_estados){
 	int i;
 

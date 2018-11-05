@@ -46,6 +46,11 @@ char *estado_get_name(Estado *s);
 int estado_get_tipo(Estado *s);
 
 /********************************************************
+* Description: returns the index of the given state name
+********************************************************/
+int estado_get_index(Estado **s, int length, char *state_name);
+
+/********************************************************
 * Description: prints the states of a given list.
 * flag_format:  0   : Q={ } using -> and * format
 *               1   : Transition format

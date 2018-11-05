@@ -27,7 +27,7 @@ void busca_unos_rec(int fila, int col, int **matrix, int dim){
 }
 
 void cierre_transitivo(int **matrix, int matrix_dim){
-  int i, j, k;
+  int i, j;
 
   if (!matrix || matrix_dim <= 0)
     return;
