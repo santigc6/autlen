@@ -40,6 +40,8 @@ void destruir_estado(Estado *s);
 ********************************************************/
 char *estado_get_name(Estado *s);
 
+void estado_set_tipo(int tipo);
+
 /********************************************************
 * Description: returns the type of a given state
 ********************************************************/

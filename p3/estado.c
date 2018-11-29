@@ -78,6 +78,13 @@ char *estado_get_name(Estado *s){
 	return s->nombre;
 }
 
+void estado_set_tipo(Estado *s, int tipo){
+	if(!s || (tipo != INICIAL && tipo != NORMAL && tipo != FINAL && tipo != INICIAL_Y_FINAL))
+		return;
+
+	s->tipo = tipo;
+}
+
 int estado_get_tipo(Estado *s){
 	if(!s || (s->tipo != INICIAL && s->tipo != NORMAL && s->tipo != FINAL && s->tipo != INICIAL_Y_FINAL))
 		return ERROR;
