@@ -21,6 +21,11 @@ typedef struct _Estado Estado;
 Estado **inicializar_lista_estados(int size);
 
 /********************************************************
+* Description: Extends a states' list
+********************************************************/
+Estado **ampliar_lista_estados(Estado **e, int new_size);
+
+/********************************************************
 * Description: Destroys a states' list
 ********************************************************/
 void destruir_lista_estados(Estado **lista);

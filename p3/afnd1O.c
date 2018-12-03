@@ -74,7 +74,7 @@ AFND *AFND1ODeVacio(){
 }
 
 AFND *AFNDAAFND1O(AFND *p_afnd){
-    int i;
+    int i, j;
     int n_ini, n_fin;
     int flag_ini_fin=0;
     int tipo;
@@ -116,16 +116,51 @@ AFND *AFNDAAFND1O(AFND *p_afnd){
     }
 
     for(i = 0; i < n_ini; i++){
-        estado_set_tipo(p_afnd->estados[indexes_ini[i]], NORMAL);
+    	estado_set_tipo(p_afnd->estados[indexes_ini[i]], NORMAL);
     }
 
     for(i = 0; i < n_fin; i++){
         estado_set_tipo(p_afnd->estados[indexes_fin[i]], NORMAL);
     }
 
+    /* Actualizamos el numero de estados */
     p_afnd->n_est += 2;
 
-    /* Hay que hacer muchas cosas que no vamos a hacer hoy porque hay que matar monstuos */
+    /* Actualizamos la matriz de lambdas */
+    p_afnd->lambda_trans = (int **)realloc(p_afnd->lambda_trans, p_afnd->n_est * sizeof(int *));
+    if(!p_afnd->lambda_trans){
+    	return NULL;
+    }
+
+    for(i = 0; i < p_afnd->n_est; i++){
+    	p_afnd->lambda_trans[i] = (int *)realloc(p_afnd->lambda_trans[i], p_afnd->n_est * sizeof(int));
+    	if(!p_afnd->lambda_trans[i]){
+    		return NULL;
+    	}
+    	for(j = 0; j < p_afnd->n_est; j++){
+    		p_afnd->lambda_trans[i][j] = 0;
+    	}
+    }
+
+    if(!ampliar_lista_estados(p_afnd->estados, p_afnd->n_est)){
+    	return NULL;
+    }
+
+    if(!AFNDInsertaEstado(p_afnd, "_i_1O", INICIAL) || !AFNDInsertaEstado(p_afnd, "_f_1O", FINAL)){
+    	return NULL;
+    }
+
+    for(i = 0; i < n_ini; i++){
+    	/* Transiciones lambda del inicial */
+    	p_afnd->lambda_trans[p_afnd->n_est - 2][indexes_ini[i]] = 1;
+    }
+
+    for(i = 0; i < n_fin; i++){
+    	/* Transiciones lambda al final */
+    	p_afnd->lambda_trans[indexes_fin[i]][p_afnd->n_est - 1] = 1;
+    }
+
+    return p_afnd;
 }
 
 AFND *AFND1OUne(AFND *p_afnd1O_1, AFND *p_afnd1O_2){

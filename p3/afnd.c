@@ -63,7 +63,7 @@ int is_in_actuales(AFND *pa, int index, int len){
   return ERROR;
 }
 
-AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
+AFND *AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
   AFND *a=NULL;
   int i, j;
   

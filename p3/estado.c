@@ -31,6 +31,17 @@ Estado **inicializar_lista_estados(int size){
 	return e;
 }
 
+Estado **ampliar_lista_estados(Estado **e, int new_size){
+	if(new_size <= 0)
+		return NULL;
+
+	e=(Estado **)realloc(e, sizeof(Estado *) * new_size);
+	if(!e)
+		return NULL;
+
+	return e;
+}
+
 void destruir_lista_estados(Estado **lista){
 	if(!lista){
 		return;
