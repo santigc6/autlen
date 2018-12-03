@@ -82,6 +82,20 @@ void destruir_estado(Estado *s){
 	
 }
 
+char *estado_set_name(Estado *s, char *new_name){
+	if(!s || !new_name)
+		return NULL;
+	
+	s->nombre=(char *)realloc(s->nombre, (strlen(new_name)+1)*sizeof(char));
+	if(!s->nombre){
+		free(s);
+		return NULL;
+	}
+  	strcpy(s->nombre, new_name);
+
+	return s->nombre;
+}
+
 char *estado_get_name(Estado *s){
 	if(!s || !s->nombre)
 		return NULL;

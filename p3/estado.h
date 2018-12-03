@@ -45,6 +45,14 @@ void destruir_estado(Estado *s);
 ********************************************************/
 char *estado_get_name(Estado *s);
 
+/********************************************************
+* Description: changes the name of a given state
+********************************************************/
+char *estado_set_name(Estado *s, char *new_name);
+
+/********************************************************
+* Description: changes the type of a given state
+********************************************************/
 void estado_set_tipo(int tipo);
 
 /********************************************************
