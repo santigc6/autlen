@@ -138,8 +138,14 @@ AFND *AFNDAAFND1O(AFND *p_afnd){
     		return NULL;
     	}
     	for(j = 0; j < p_afnd->n_est; j++){
-    		p_afnd->lambda_trans[i][j] = 0;
-    	}
+        if(i >= p_afnd->n_est - 2){
+    		  p_afnd->lambda_trans[i][j] = 0;
+        } else{
+          if(j >= p_afnd->n_est - 2){
+            p_afnd->lambda_trans[i][j] = 0;
+          }
+        }
+      }
     }
 
     if(!ampliar_lista_estados(p_afnd->estados, p_afnd->n_est)){
@@ -167,6 +173,8 @@ AFND *AFNDAAFND1O(AFND *p_afnd){
 }
 
 AFND *AFND1OUne(AFND *p_afnd1O_1, AFND *p_afnd1O_2){
+    int i;
+
     if(!p_afnd1O_1 || !p_afnd1O_2)
         return NULL;
 }
