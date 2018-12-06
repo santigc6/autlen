@@ -5,7 +5,20 @@
 #ifndef AFND_H
 #define AFND_H
 
-typedef struct _AFND AFND;
+typedef struct _AFND{ /* Estructura principal AFND */
+	char *name; /* Nombre del AFND */
+	int **lambda_trans; /* Transiciones lambda del AFND */
+	Alfabeto *alfabeto; /* Alfabeto del AFND */
+	Palabra *word;/* Palabra a procesar por el AFND */
+	int n_simb; /* Numero de simboloes del AFND */
+	int n_est; /* Numero de estados del AFND */
+	int current_est; /* Numero de estados actualmente aniadidos al AFND */
+	int n_trans; /* Numero de transiciones */
+	int n_act; /* Numero de estados actuales */
+	Estado **estados; /* Conjunto de estados del AFND */
+	Estado **actuales; /* Conjunto de estados actuales del AFND */
+	Transicion **transitions; /* Transiciones del AFND */
+} AFND;
 
 /* Las cabeceras estan especificadas en el enunciado de la practica */
 AFND *AFNDNuevo(char *nombre, int num_estados, int num_simbolos);

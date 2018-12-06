@@ -31,6 +31,17 @@ Estado **inicializar_lista_estados(int size){
 	return e;
 }
 
+Estado **ampliar_lista_estados(Estado **e, int new_size){
+	if(new_size <= 0)
+		return NULL;
+
+	e=(Estado **)realloc(e, sizeof(Estado *) * new_size);
+	if(!e)
+		return NULL;
+
+	return e;
+}
+
 void destruir_lista_estados(Estado **lista){
 	if(!lista){
 		return;
@@ -71,11 +82,32 @@ void destruir_estado(Estado *s){
 	
 }
 
+char *estado_set_name(Estado *s, char *new_name){
+	if(!s || !new_name)
+		return NULL;
+	
+	s->nombre=(char *)realloc(s->nombre, (strlen(new_name)+1)*sizeof(char));
+	if(!s->nombre){
+		free(s);
+		return NULL;
+	}
+  	strcpy(s->nombre, new_name);
+
+	return s->nombre;
+}
+
 char *estado_get_name(Estado *s){
 	if(!s || !s->nombre)
 		return NULL;
 	
 	return s->nombre;
+}
+
+void estado_set_tipo(Estado *s, int tipo){
+	if(!s || (tipo != INICIAL && tipo != NORMAL && tipo != FINAL && tipo != INICIAL_Y_FINAL))
+		return;
+
+	s->tipo = tipo;
 }
 
 int estado_get_tipo(Estado *s){

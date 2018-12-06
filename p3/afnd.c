@@ -23,22 +23,6 @@ typedef struct _Transiciones{
 	char *trans_symbol; /* Simbolo de la transicion */
 } Transicion;
 
-/* Estructura principal AFND */
-struct _AFND{
-	char *name; /* Nombre del AFND */
-	int **lambda_trans; /* Transiciones lambda del AFND */
-	Alfabeto *alfabeto; /* Alfabeto del AFND */
-  Palabra *word;/* Palabra a procesar por el AFND */
-	int n_simb; /* Numero de simboloes del AFND */
-	int n_est; /* Numero de estados del AFND */
-  int current_est; /* Numero de estados actualmente aniadidos al AFND */
-  int n_trans; /* Numero de transiciones */
-  int n_act; /* Numero de estados actuales */
-	Estado **estados; /* Conjunto de estados del AFND */
-  Estado **actuales; /* Conjunto de estados actuales del AFND */
-	Transicion **transitions; /* Transiciones del AFND */
-};
-
 /* Private function */
 /****************************************************************************************
 * Description: OK   : las dos transiciones tienen el mismo estado inicial y el mismo simbolo de transicion
@@ -79,7 +63,7 @@ int is_in_actuales(AFND *pa, int index, int len){
   return ERROR;
 }
 
-AFND * AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
+AFND *AFNDNuevo(char* nombre, int num_estados, int num_simbolos){
   AFND *a=NULL;
   int i, j;
 
