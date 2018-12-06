@@ -263,6 +263,9 @@ AFND *AFND1OEstrella(AFND *p_afnd_origen){
     	p_afnd->lambda_trans[indexes_fin[i]][p_afnd->n_est - 1] = 1;
     }
 
+    AFNDInsertaLTransicion(p_afnd_origen, "_i_1O", "_f_1O");
+    AFNDInsertaLTransicion(p_afnd_origen, "_f_1O", "_i_1O");
+
     free(indexes_ini);
     free(indexes_ini);
 }
