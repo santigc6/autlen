@@ -291,10 +291,65 @@ AFND *AFND1OConcatena(AFND *p_afnd_origen1, AFND *p_afnd_origen2){
 }
 
 AFND *AFND1OEstrella(AFND *p_afnd_origen){
+  AFND *p_a = p_afnd_origen;
+  int i, j;
+  int ntrans;
+  int ini;
+  int fin;
+
   if(!p_afnd_origen)
     return NULL;
 
-  
+  /* Buscamos los estados inicial y final */
+  for(i = 0; i < p_afnd_origen->n_est; i++){
+    if(estado_get_tipo(p_afnd_origen->estados[i]) == INICIAL){
+      ini=p_a->current_est;
+      estado_set_tipo(p_afnd_origen->estados[i], NORMAL);
+    } else if(estado_get_tipo(p_afnd_origen->estados[i]) == FINAL){
+      fin=p_a->current_est;
+      estado_set_tipo(p_afnd_origen->estados[i], NORMAL);
+    }
+  }
+
+  /* Actualizamos el numero de estados */
+  p_a->n_est += 2;
+
+  /* Actualizamos la matriz de lambdas */
+  p_a->lambda_trans = (int **)realloc(p_a->lambda_trans, p_a->n_est * sizeof(int *));
+  if(!p_a->lambda_trans){
+    return NULL;
+  }
+
+  for(i = 0; i < p_a->n_est; i++){
+    p_a->lambda_trans[i] = (int *)realloc(p_a->lambda_trans[i], p_a->n_est * sizeof(int));
+    if(!p_a->lambda_trans[i]){
+      return NULL;
+    }
+    for(j = 0; j < p_a->n_est; j++){
+      if(i >= p_a->n_est - 2){
+        p_a->lambda_trans[i][j] = 0;
+      } else{
+        if(j >= p_a->n_est - 2){
+          p_a->lambda_trans[i][j] = 0;
+        }
+      }
+    }
+  }
+
+  if(!ampliar_lista_estados(p_a->estados, p_a->n_est)){
+    return NULL;
+  }
+
+  if(!AFNDInsertaEstado(p_a, "_i_1O", INICIAL) || !AFNDInsertaEstado(p_a, "_f_1O", FINAL)){
+    return NULL;
+  }
+
+  p_a->lambda_trans[p_a->n_est - 2][ini]=1;
+  p_a->lambda_trans[fin][p_a->n_est - 1]=1;
+  p_a->lambda_trans[ini][fin]=1;
+  p_a->lambda_trans[fin][ini]=1;
+
+  return p_a;
 }
 
 void AFNDADot(AFND * p_afnd){
