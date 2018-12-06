@@ -19,7 +19,7 @@
 typedef struct _Transiciones{
 	Estado *inicial; /* Estado inicial */
 	Estado **final; /* Conjunto de estados finales */
-  int n_final; /* Numero de estados finales */
+  	int n_final; /* Numero de estados finales */
 	char *trans_symbol; /* Simbolo de la transicion */
 } Transicion;
 
