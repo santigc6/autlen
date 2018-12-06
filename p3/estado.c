@@ -48,6 +48,7 @@ void destruir_lista_estados(Estado **lista){
 	}
 
 	free(lista);
+	lista=NULL;
 }
 
 Estado *crear_estado(char *name, int tipo){
@@ -77,8 +78,10 @@ void destruir_estado(Estado *s){
 		return;
 	if(s->nombre)
 		free(s->nombre);
-	if(s)
+	if(s){
 		free(s);
+		s=NULL;
+	}
 	
 }
 

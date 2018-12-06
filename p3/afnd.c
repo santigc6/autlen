@@ -15,14 +15,6 @@
 
 #define DEFAULT 1
 
-/* Estructura para las transiciones (privada) */
-typedef struct _Transiciones{
-	Estado *inicial; /* Estado inicial */
-	Estado **final; /* Conjunto de estados finales */
-  	int n_final; /* Numero de estados finales */
-	char *trans_symbol; /* Simbolo de la transicion */
-} Transicion;
-
 /* Private function */
 /****************************************************************************************
 * Description: OK   : las dos transiciones tienen el mismo estado inicial y el mismo simbolo de transicion
@@ -176,6 +168,7 @@ void AFNDElimina(AFND * p_afnd){
         free(p_afnd->transitions[i]->trans_symbol);
         destruir_lista_estados(p_afnd->transitions[i]->final);
         free(p_afnd->transitions[i]);
+        p_afnd->transitions[i] = NULL;
       }
     }
     free(p_afnd->transitions);
