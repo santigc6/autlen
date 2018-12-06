@@ -164,6 +164,8 @@ AFND *AFNDAAFND1O(AFND *p_afnd){
 }
 
 AFND *AFND1OUne(AFND *p_afnd1O_1, AFND *p_afnd1O_2){
+    int i;
+
     if(!p_afnd1O_1 || !p_afnd1O_2)
         return NULL;
 }
