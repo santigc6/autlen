@@ -5,6 +5,10 @@
 #ifndef AFND_H
 #define AFND_H
 
+#include "estado.h"
+#include "alfabeto.h"
+#include "palabra.h"
+
 /* Estructura para las transiciones */
 typedef struct _Transiciones{
 	Estado *inicial; /* Estado inicial */
@@ -44,5 +48,14 @@ AFND *AFNDInicializaCadenaActual (AFND *p_afnd);
 AFND *AFNDInicializaEstado (AFND *p_afnd);
 void AFNDProcesaEntrada(FILE *fd, AFND *p_afnd);
 void AFNDTransita(AFND *p_afnd);
+AFND *AFND1ODeSimbolo(char *simbolo);
+AFND *AFND1ODeLambda();
+AFND *AFND1ODeVacio();
+AFND *AFNDAAFND1O(AFND *p_afnd);
+AFND *AFND1OUne(AFND *p_afnd1O_1, AFND *p_afnd1O_2);
+AFND *AFND1OConcatena(AFND *p_afnd_origen1, AFND *p_afnd_origen2);
+AFND *AFND1OEstrella(AFND *p_afnd_origen);
+void AFNDADot(AFND * p_afnd);
+
 
 #endif

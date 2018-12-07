@@ -14,7 +14,7 @@ DEPS = $(shell echo $(SOURCES) | sed -e 's:\.c[p]*:\.d:g')
 
 all: main
 
-main: main.o afnd.o alfabeto.o estado.o palabra.o relaciones.o afnd1O.o
+main: main.o afnd.o alfabeto.o estado.o palabra.o relaciones.o
 
 # receta para hacer un .d (dependencias automaticas de tipo .h para tus .o)
 %.d : %.c

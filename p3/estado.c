@@ -31,11 +31,11 @@ Estado **inicializar_lista_estados(int size){
 	return e;
 }
 
-Estado **ampliar_lista_estados(Estado **e, int new_size){
+Estado ***ampliar_lista_estados(Estado ***e, int new_size){
 	if(new_size <= 0)
 		return NULL;
 
-	e=(Estado **)realloc(e, sizeof(Estado *) * new_size);
+	*e=(Estado **)realloc(*e, sizeof(Estado *) * new_size);
 	if(!e)
 		return NULL;
 

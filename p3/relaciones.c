@@ -13,12 +13,14 @@ void cierre_reflexivo(int **matrix, int matrix_dim){
 
 void busca_unos_rec(int fila, int col, int **matrix, int dim){
   int i;
-  
+
   if (!matrix || fila < 0 || col < 0 || dim <= 0)
     return;
-    
+
   for(i = 0; i < dim; i++){
     if(col != i && matrix[col][i] == 1){
+      if(matrix[fila][i])
+        continue;
       matrix[fila][i] = 1;
       busca_unos_rec(fila, i, matrix, dim);
     }

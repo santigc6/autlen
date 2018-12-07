@@ -23,7 +23,7 @@ Estado **inicializar_lista_estados(int size);
 /********************************************************
 * Description: Extends a states' list
 ********************************************************/
-Estado **ampliar_lista_estados(Estado **e, int new_size);
+Estado ***ampliar_lista_estados(Estado ***e, int new_size);
 
 /********************************************************
 * Description: Destroys a states' list
@@ -53,7 +53,7 @@ char *estado_set_name(Estado *s, char *new_name);
 /********************************************************
 * Description: changes the type of a given state
 ********************************************************/
-void estado_set_tipo(int tipo);
+void estado_set_tipo(Estado *s, int tipo);
 
 /********************************************************
 * Description: returns the type of a given state
