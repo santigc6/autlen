@@ -897,7 +897,7 @@ AFND *AFND1OEstrella(AFND *p_afnd_origen){
   if(!p_afnd_origen)
     return NULL;
 
-  p_a = AFNDNuevo("AFND_*", p_afnd_origen->n_est + 2, p_afnd_origen->n_simb);
+  p_a = AFNDNuevo("AFND_X", p_afnd_origen->n_est + 2, p_afnd_origen->n_simb);
   if(!p_a)
     return NULL;
 
@@ -917,7 +917,7 @@ AFND *AFND1OEstrella(AFND *p_afnd_origen){
       fin=p_a->current_est;
     }
     strcpy(name_aux, estado_get_name(p_afnd_origen->estados[i]));
-    strcat(name_aux, "_*");
+    strcat(name_aux, "_X");
     AFNDInsertaEstado(p_a, name_aux, NORMAL);
   }
 
@@ -929,9 +929,9 @@ AFND *AFND1OEstrella(AFND *p_afnd_origen){
   for(i=0; i < p_afnd_origen->n_trans; i++){
     for(j=0; j < p_afnd_origen->transitions[i]->n_final; j++){
       strcpy(name_aux, estado_get_name(p_afnd_origen->transitions[i]->inicial));
-      strcat(name_aux, "_*");
+      strcat(name_aux, "_X");
       strcpy(name_aux1, estado_get_name(p_afnd_origen->transitions[i]->final[j]));
-      strcat(name_aux1, "_*");
+      strcat(name_aux1, "_X");
       AFNDInsertaTransicion(p_a, name_aux, p_afnd_origen->transitions[i]->trans_symbol, name_aux1);
     }
   }
@@ -974,7 +974,7 @@ void AFNDADot(AFND * p_afnd){
       return;
   }
 
-  fprintf(f, "diagraph %s { rankdir=LR;\n\t_invisible [style=\"invis\"];\n", p_afnd->name);
+  fprintf(f, "digraph %s { rankdir=LR;\n\t_invisible [style=\"invis\"];\n", p_afnd->name);
   for(i = 0; i < p_afnd->n_est; i++){
       tipo = estado_get_tipo(p_afnd->estados[i]);
       if(tipo == FINAL){
@@ -994,7 +994,7 @@ void AFNDADot(AFND * p_afnd){
       symb=get_palabra_by_index(p_afnd->alfabeto, k);
       for(flag=ERROR, i=0; i<p_afnd->n_trans; i++){
         if(transitions_equal(p_afnd->transitions[i], name, symb) == OK){ /* We try to find a transition */
-          for(l = 0; l < p_afnd->n_trans; l++){
+          for(l = 0; l < p_afnd->transitions[i]->n_final; l++){
             fprintf(f, "\t%s -> ", name);
             fprintf(f, "%s [label=\"%s\"];\n", estado_get_name(p_afnd->transitions[i]->final[l]) , p_afnd->transitions[i]->trans_symbol);
 

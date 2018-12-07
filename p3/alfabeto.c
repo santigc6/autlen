@@ -63,9 +63,17 @@ void destruye_alfabeto(Alfabeto *a){
 }
 
 int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
+  int i;
+
   if(!a || !palabra || a->current == a->size)
     return ERROR;
   
+  for(i = 0; i < a->current; i++){
+    if(!strcmp(a->symbols[i], palabra)){ /* Symbol was already in the alphabet */
+      return OK;
+    }
+  }
+
   a->symbols[a->current]=(char *)malloc((strlen(palabra)+1)*sizeof(char));
   if(!a->symbols[a->current])
     return ERROR;
