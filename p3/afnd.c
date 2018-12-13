@@ -13,6 +13,9 @@
 #define DEFAULT 1
 #define MAX_NAME 256
 
+/* To generate a filename for the .dot */
+int AFND_number = 0;
+
 /* Private function */
 /****************************************************************************************
 * Description: OK   : las dos transiciones tienen el mismo estado inicial y el mismo simbolo de transicion
@@ -193,7 +196,7 @@ void AFNDImprime(FILE * fd, AFND* p_afnd){
     return;
 
   fprintf(fd, "%s={\n", p_afnd->name);
-  fprintf(fd, "\tnum_simbolos = %d\n\n\t", p_afnd->n_simb);
+  fprintf(fd, "\tnum_simbolos = %d\n\n\t", get_curr_alfabeto(p_afnd->alfabeto));
   print_alfabeto(fd, p_afnd->alfabeto);
   fprintf(fd, "\tnum_estados = %d\n\n\t", p_afnd->n_est);
   print_estados(fd, p_afnd->estados, 0, p_afnd->n_est);
@@ -364,8 +367,21 @@ AFND * AFNDInsertaTransicion(AFND * p_afnd, char * nombre_estado_i, char * nombr
 }
 
 AFND * AFNDInsertaLetra(AFND * p_afnd, char * letra){
+  int i, cur;
+  int found = 0;
+  
   if(!p_afnd || !letra)
     return NULL;
+
+  cur = get_curr_alfabeto(p_afnd->alfabeto);
+  for(i = 0; i < cur; i++){
+    if(!strcmp(get_palabra_by_index(p_afnd->alfabeto, i), letra)){
+      found = 1;
+    }
+  }
+
+  if(!found) /* Si la letra a insertar no esta en el alfabeto no se inserta */
+    return p_afnd;
 
   if(add_symbol(p_afnd->word, letra) == ERROR)
     return NULL;
@@ -965,14 +981,25 @@ void AFNDADot(AFND * p_afnd){
   int tipo, index_ini;
   char *name=NULL, *symb=NULL;
   int flag=ERROR;
+  char *output_name=NULL;
 
   if(!p_afnd)
       return;
 
-  f = fopen("automata.dot", "w+");
+  output_name=(char *)malloc(sizeof(char) * MAX_NAME);
+  if(!output_name)
+    return;
+
+  sprintf(output_name, "automata%d.dot", AFND_number);
+  AFND_number++;
+  
+  f = fopen(output_name, "w+");
   if(!f){
+      free(output_name);
       return;
   }
+
+  free(output_name);
 
   fprintf(f, "digraph %s { rankdir=LR;\n\t_invisible [style=\"invis\"];\n", p_afnd->name);
   for(i = 0; i < p_afnd->n_est; i++){

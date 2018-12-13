@@ -38,6 +38,11 @@ int get_words_number(Alfabeto *a);
 int get_size_alfabeto(Alfabeto *a);
 
 /********************************************************
+* Description: Devuelve el tamanio actual del alfabeto
+********************************************************/
+int get_curr_alfabeto(Alfabeto *a);
+
+/********************************************************
 * Description: Imprime el alfabeto
 ********************************************************/
 void print_alfabeto(FILE *fd, Alfabeto* a);

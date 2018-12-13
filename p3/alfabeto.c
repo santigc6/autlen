@@ -84,6 +84,14 @@ int alfabeto_aniade_palabra(Alfabeto *a, char *palabra){
   return OK;
 }
 
+int get_curr_alfabeto(Alfabeto *a){
+  if(!a){
+    return ERROR;
+  }
+  
+  return a->current;
+}
+
 char *get_palabra_by_index(Alfabeto *a, int index){
   if(!a || index < 0 || index >= a->current)
     return NULL;

@@ -108,6 +108,16 @@ int main(int argc, char ** argv)
 	AFNDProcesaEntrada(stdout,p_afnd_l3);
 	AFNDInicializaCadenaActual(p_afnd_l3);
 
+	/* PRUEBA IMPRESION A DOT */
+	
+	AFNDADot(p_afnd_l0);
+	AFNDADot(p_afnd_l1);
+	AFNDADot(p_afnd_l2);
+	AFNDADot(p_afnd_l3);
+	AFNDADot(p_afnd_l4);
+	AFNDADot(p_afnd_l5);
+	AFNDADot(p_afnd_l6);
+
 /********************************************************/
 	AFNDElimina(p_afnd_l0);
 	AFNDElimina(p_afnd_l1);
